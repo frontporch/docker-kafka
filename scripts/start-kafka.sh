@@ -73,7 +73,7 @@ if [ ! -z "$AUTO_CREATE_TOPICS" ]; then
 fi
 
 # Create topics in background
-usr/bin/create-topics.sh &
+/usr/bin/create-topics.sh &
 
 # Run Kafka
 $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties

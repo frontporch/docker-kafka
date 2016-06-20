@@ -24,6 +24,6 @@ ADD supervisor/kafka.conf /etc/supervisor/conf.d/
 COPY scripts/ /usr/bin
 
 # Make startup script executable
-RUN chmod 755 /usr/bin/start-kafka.sh
+RUN chmod 755 /usr/bin/start-kafka.sh && chmod 755 /usr/bin/create-topics.sh
 
 CMD ["supervisord", "-n"]

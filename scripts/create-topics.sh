@@ -88,7 +88,7 @@ function create_topics {
                         --topic ${TOPIC}
 
             # If we successfully created the topic
-            if $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper 192.168.33.11:2181 | grep -q ${TOPIC}; then
+            if $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper ${ZK_CONNECTION_STRING} | grep -q ${TOPIC}; then
                 echo "Created topic \"${TOPIC}\"."
                 break
             else
@@ -99,7 +99,7 @@ function create_topics {
         # If we made it through all our retry attempts
         if [ $RETRIES -lt 1 ]; then
             # and were not successful in creating the topic
-            if $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper 192.168.33.11:2181 | grep -q ${TOPIC}; then
+            if $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper ${ZK_CONNECTION_STRING} | grep -q ${TOPIC}; then
                 kill_this_container
             fi
         fi
