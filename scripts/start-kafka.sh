@@ -42,6 +42,12 @@ if [ ! -z "$ZK_CONNECTION_STRING" ]; then
     sed -r -i "s/(zookeeper.connect)=(.*)/\1=$ZK_CONNECTION_STRING/g" $KAFKA_HOME/config/server.properties
 fi
 
+# Configure Kafka log directory
+if [ ! -z "$LOG_DIRS" ]; then
+    echo "log retention hours: $LOG_DIRS"
+    sed -r -i "s/(log.dirs)=(.*)/\1=$LOG_DIRS/g" $KAFKA_HOME/config/server.properties
+fi
+
 # Allow specification of log retention policies
 if [ ! -z "$LOG_RETENTION_HOURS" ]; then
     echo "log retention hours: $LOG_RETENTION_HOURS"
