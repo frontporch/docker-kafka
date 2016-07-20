@@ -9,16 +9,13 @@ ENV PATH="$PATH:$KAFKA_HOME/bin"
 # Expose default Kafka port
 EXPOSE 9092
 
+# https://github.com/Yelp/dumb-init
+RUN curl -fLsS -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.0.2/dumb-init_1.0.2_amd64 && chmod +x /usr/local/bin/dumb-init
+
 # Install Kafka and dependencies
-RUN apt-get update > /dev/null && \
-    apt-get install -qq wget supervisor dnsutils && \
-    rm -rf /var/lib/apt/lists/* && apt-get clean && \
-    wget -q http://apache.mirrors.spacedump.net/kafka/"$KAFKA_VERSION"/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -O /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz && \
+RUN wget -q http://apache.mirrors.spacedump.net/kafka/"$KAFKA_VERSION"/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -O /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz && \
     tar xfz /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -C /opt && \
     rm /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz
-
-# Copy over supervisor config
-ADD supervisor/kafka.conf /etc/supervisor/conf.d/
 
 # Copy over init scripts
 COPY scripts/ /usr/bin
@@ -26,4 +23,5 @@ COPY scripts/ /usr/bin
 # Make startup script executable
 RUN chmod 755 /usr/bin/start-kafka.sh && chmod 755 /usr/bin/create-topics.sh
 
-CMD ["supervisord", "-n"]
+ENTRYPOINT ["/usr/local/bin/dumb-init"]
+CMD ["/usr/bin/start-kafka.sh"]
