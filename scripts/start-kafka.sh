@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # $TOPICS is on env variable that needs to be passed into the docker container
 # Optional ENV variables:
@@ -10,6 +10,8 @@
 # * NUM_PARTITIONS: configure the default number of log partitions per topic
 
 # For reference: http://kafka.apache.org/documentation.html#brokerconfigs
+
+echo $ZK_CONNECTION_STRING
 
 # Set sensible defaults for environmental variables where possible
 HOST_NAME=${HOST_NAME:-0.0.0.0}
