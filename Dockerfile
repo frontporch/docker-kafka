@@ -17,11 +17,8 @@ RUN wget -q http://apache.mirrors.spacedump.net/kafka/"$KAFKA_VERSION"/kafka_"$S
     tar xfz /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -C /opt && \
     rm /tmp/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz
 
-# Copy over init scripts
-COPY scripts/ /usr/bin
-
-# Make startup script executable
-RUN chmod 755 /usr/bin/start-kafka.sh && chmod 755 /usr/bin/create-topics.sh
+# Copy over init script
+COPY start-kafka.sh /usr/bin/start-kafka.sh
 
 ENTRYPOINT ["/usr/local/bin/dumb-init"]
 CMD ["/usr/bin/start-kafka.sh"]
