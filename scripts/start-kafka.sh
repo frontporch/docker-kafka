@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # $TOPICS is on env variable that needs to be passed into the docker container
 # Optional ENV variables:
@@ -11,7 +11,7 @@
 
 # For reference: http://kafka.apache.org/documentation.html#brokerconfigs
 
-echo $ZK_CONNECTION_STRING
+function join { local IFS="$1"; shift; echo "$*"; }
 
 # Set sensible defaults for environmental variables where possible
 HOST_NAME=${HOST_NAME:-0.0.0.0}
@@ -19,7 +19,16 @@ PORT=${PORT:-9092}
 # ADVERTISED_HOST=${ADVERTISED_HOST:-192.168.1.1}
 ADVERTISED_PORT=${ADVERTISED_PORT:-9092}
 BROKER_ID=${BROKER_ID:-1}
-#ZK_CONNECTION_STRING=${ZK_CONNECTION_STRING:-127.0.0.1:2181}
+ZK_CONNECTION_STRING=${ZK_CONNECTION_STRING:-127.0.0.1:2181}
+if [ ! -z "$ZK_CONNECTION_STRING" ]; then
+    # Massage into correct format (space delimited array->comma deletion) because Kubernetes
+    # doesn't like commas in their env var strings
+    ZK_CONNECTION_STRING=( $ZK_CONNECTION_STRING )
+    ZK_CONNECTION_STRING=$(join , ${ZK_CONNECTION_STRING[@]})
+else
+    exit 0;
+fi
+
 #LOG_DIRS=${LOG_DIRS:-/tmp/kafka-logs}
 #LOG_RETENTION_HOURS=${LOG_RETENTION_HOURS:-168}
 #LOG_RETENTION_BYTES=${LOG_RETENTION_BYTES:-1073741824}
