@@ -182,6 +182,13 @@ function create_topics {
     do
         RETRIES=10
         until [ $RETRIES -lt 1 ]; do
+
+            # If the there is a topic prefix specified
+            if [ ! -z ${TOPIC_PREFIX} ]; then
+                # Prepend it to the topic
+                TOPIC=${TOPIC_PREFIX}${TOPIC};
+            fi
+
             # Attempt to create the topic
             echo "Creating topic \"${TOPIC}\"."
             ${KAFKA_HOME}/bin/kafka-topics.sh \
