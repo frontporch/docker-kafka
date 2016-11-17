@@ -225,7 +225,7 @@ echo "Updating Kafka broker config"
 update_kafka_config
 
 # Turn on monitor mode so we can send job to background
-# set -m
+set -m
 
 # Create ENV VARs so it's picked up when starting Kafka server
 export JMX_PORT=${JMX_PORT:-9999}
@@ -240,7 +240,7 @@ export KAFKA_JMX_OPTS="\
 
 # Run Kafka (in background for now)
 echo "Starting Kafka in background"
-$KAFKA_HOME/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
+$KAFKA_HOME/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties &
 
 # UndefineENV VARs so it's not picked up when creating topics
 unset JMX_PORT
