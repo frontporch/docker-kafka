@@ -5,9 +5,13 @@ ENV SCALA_VERSION="2.11"
 ENV KAFKA_VERSION="0.9.0.1"
 ENV KAFKA_HOME=/opt/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION"
 ENV PATH="$PATH:$KAFKA_HOME/bin"
+ENV JMX_PORT=9999
 
 # Expose default Kafka port
 EXPOSE 9092
+
+# Expose metrics via JMX
+EXPOSE 9999
 
 # https://github.com/Yelp/dumb-init
 RUN curl -fLsS -o /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.0.2/dumb-init_1.0.2_amd64 && chmod +x /usr/local/bin/dumb-init
