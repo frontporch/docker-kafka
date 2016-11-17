@@ -225,20 +225,35 @@ echo "Updating Kafka broker config"
 update_kafka_config
 
 # Turn on monitor mode so we can send job to background
-set -m
+# set -m
+
+# Create ENV VARs so it's picked up when starting Kafka server
+export JMX_PORT=${JMX_PORT:-9999}
+export KAFKA_JMX_OPTS="\
+-Dcom.sun.management.jmxremote=true \
+-Dcom.sun.management.jmxremote.local.only=false \
+-Dcom.sun.management.jmxremote.authenticate=false \
+-Dcom.sun.management.jmxremote.ssl=false \
+-Djava.rmi.server.hostname=${ADVERTISED_HOST} \
+-Dcom.sun.management.jmxremote.rmi.port=9998
+"
 
 # Run Kafka (in background for now)
 echo "Starting Kafka in background"
-$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties &
+$KAFKA_HOME/bin/kafka-server-start.sh ${KAFKA_HOME}/config/server.properties
+
+# UndefineENV VARs so it's not picked up when creating topics
+unset JMX_PORT
+unset KAFKA_JMX_OPTS
 
 # Make sure Kafka starts by checking expected IP/PORT are available for connection
-echo "Verify Kafka is up"
-#connect_or_die ${ADVERTISED_HOST} ${ADVERTISED_PORT} ${INITIALIZATION_TIMEOUT_SECONDS}
+# echo "Verify Kafka is up"
+# connect_or_die ${ADVERTISED_HOST} ${ADVERTISED_PORT} ${INITIALIZATION_TIMEOUT_SECONDS}
 
 # Kafka can start and still fail based on configuration, etc.  Do this to make sure
 # Kafka not only starts, but initializes correctly
-echo "Verify Kafka is initialized"
-#initialize_or_die ${INITIALIZATION_TIMEOUT_SECONDS}
+# echo "Verify Kafka is initialized"
+# initialize_or_die ${INITIALIZATION_TIMEOUT_SECONDS}
 
 # If Kafka came up, create the topics
 echo "Add topics to Kafka"
